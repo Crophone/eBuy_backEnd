@@ -10,7 +10,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
-
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 
@@ -115,8 +115,8 @@ class GoodController extends Controller
     protected function grid()
     {
         $grid = new Grid(new Good);
-
-        $grid->good_id('Id')->sortable();
+        // 相当于$grid->column(‘数据库中相应的字段’,'数据字段说明');
+        $grid->good_id('商品ID')->sortable();
         $grid->good_name('商品名称');
         $grid->good_price('单价')->sortable();
         $grid->good_sales('销量');
@@ -124,7 +124,7 @@ class GoodController extends Controller
         $grid->good_description('商品详情');
         $grid->created_at('上架时间');
         $grid->image_url('图片路径');
-
+        
         return $grid;
     }
 
@@ -178,7 +178,7 @@ class GoodController extends Controller
     protected function myCreateGood(){
 
         return 
-        '<form action="/goods/create" method="POST" enctype="multipart/form-data" >
+        '<form action="/admin/goods/create" method="POST" enctype="multipart/form-data" >
              <br />
             <td>商品名称</td>
             <input name="good_name" value="商品名称"> 
@@ -215,6 +215,35 @@ class GoodController extends Controller
 //window.location.href="http://127.0.0.1:8000/admin/goods";
     }
 
+    public function myFormGood(Request $request){
+
+        if (file_exists("../public/images/" . $_FILES["file"]["name"])) {
+                        echo $_FILES["file"]["name"] . " already exists. ";
+                    } else {
+                        move_uploaded_file($_FILES["file"]["tmp_name"], "../public/images/" . $_FILES["file"]["name"]);
+                    }
+        $imagePath = "http://127.0.0.1:8000/public/images/" . $_FILES["file"]["name"];
+        echo "<br>";
+
+
+
+        $good = new Good;
+        $good->good_name = $request->good_name;
+        $good->good_type = $request->good_type;
+        $good->good_price = $request->good_price;
+        $good->good_sales = $request->good_sales;
+        $good->good_abstract = $request->good_abstract;
+        $good->good_description = $request->good_description;
+        $good->image_url = $imagePath;
+        
+                
+        if ($good->save()) {
+            echo '添加商品成功！';
+        } else {
+            echo '添加商品失败！';
+        }
+        return \redirect('admin/goods');
+    }
 
 
 }

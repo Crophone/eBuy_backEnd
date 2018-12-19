@@ -12,8 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
-        'goods/create',
         'cart',
         'users/getid',
         '/shopping_lists/many',
@@ -21,6 +19,8 @@ class VerifyCsrfToken extends Middleware
         '/orders/create',
         'orders',
         '/order_lists/create',
-        '/contact_infos'
+        '/contact_infos',
+        'admin/goods/create',
+
     ];
 }

@@ -13,6 +13,7 @@ class GoodController extends Controller
         $goods = DB::table('goods')->get();
         return  json_encode($goods);
     }
+    
     public function form(){
   
         return '<form action="/goods/create" method="POST" enctype="multipart/form-data" >
@@ -30,32 +31,7 @@ class GoodController extends Controller
        
     }
 
-    public function create(Request $request){
 
-        if (file_exists("../public/images/" . $_FILES["file"]["name"])) {
-                        echo $_FILES["file"]["name"] . " already exists. ";
-                    } else {
-                        move_uploaded_file($_FILES["file"]["tmp_name"], "../public/images/" . $_FILES["file"]["name"]);
-                    }
-        $imagePath = "http://127.0.0.1:8000/public/images/" . $_FILES["file"]["name"];
-        echo "<br>";
-        $good = new Good;
-        $good->good_name = $request->good_name;
-        $good->good_type = $request->good_type;
-        $good->good_price = $request->good_price;
-        $good->good_sales = $request->good_sales;
-        $good->good_abstract = $request->good_abstract;
-        $good->good_description = $request->good_description;
-
-        $good->image_url = $imagePath;
-                
-        if ($good->save()) {
-            echo '添加商品成功！';
-        } else {
-            echo '添加商品失败！';
-        }
-        return \redirect('admin/goods');
-    }
 
     public function image($image){
         //图片响应
